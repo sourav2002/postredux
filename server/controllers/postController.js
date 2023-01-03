@@ -14,14 +14,12 @@ export const getPosts = async(req, res) => {
 }
 
 export const getPost = async(req, res) =>{
-    const {id} = req.params;
-    try {
-        const post = await PostData.findById(id);
-        res.status(200).json(post);
-    } catch (error) {
-        res.status(404).json({message : error.message})
-    }
-}
+    const {id} = req.query;
+ if(id){
+    const post = await PostData.findById(id)
+
+ res.json(post)
+}}
 
 export const createPost = async (req, res) =>{
     const { title, content, user } = req.body;
@@ -35,9 +33,8 @@ export const createPost = async (req, res) =>{
 }
 
 export const updatePost = async (req, res) => {
-    const { id } = req.params;
-    const { title, content, user } = req.body;
-    
+    const { title, content, user,id } = req.body;
+     
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
     const updatedPost = { title, content, user, _id: id };
@@ -48,21 +45,23 @@ export const updatePost = async (req, res) => {
 }
 
 export const deletePost = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.query;
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
     await PostData.findByIdAndRemove(id);
-
     res.json({ message: "Post deleted successfully." });
 }
 
-export const likePost = async (req, res) => {
-    const { id } = req.params;
-
+export const likePost =  async (req, res) => {
+        const {id,reactions} = req.body.data    
+       
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
-    const updatedPost = await PostData.findByIdAndUpdate(id, { $inc: { 'reactions.thumbsUp': 1 } }, {new: true} );
-    res.json(updatedPost);
+    const updatedPost = await PostData.findByIdAndUpdate(id );
+    const save = await updatedPost.update({ reactions})
+    if(save){
+        res.json({success : "Likes Saved"})
+    }
 }
 
 export default router;

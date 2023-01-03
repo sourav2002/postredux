@@ -32,5 +32,6 @@ const postSchema = mongoose.Schema({
   },
 });
 
+
 const PostData = mongoose.model("PostData", postSchema);
 export default PostData;

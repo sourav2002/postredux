@@ -1,30 +1,43 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { postAdded } from "./postsSlice";
 const AddPostForm = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [user, setUser] = useState("");
-
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate()
-  const onTitleChanged = (e) => setTitle(e.target.value);
-  const onContentChanged = (e) => setContent(e.target.value);
-  const onAuthorChanged = (e) => setUser(e.target.value);
 
-  const onSavePostClicked = () => {
-    if (title.trim() && content.trim()) {
-      dispatch(postAdded(title.trim(), content.trim(), user.trim()));
-      setTitle("");
-      setUser("")
-      setContent("");
-      navigate("/")
+
+const [detail,setDetail]=useState({
+  title : "",
+  user : "",
+  content : ""
+})
+
+const handleChange = (e)=>{
+  let name = e.target.name
+  let value = e.target.value
+  setDetail({...detail,[name]:value})
+}
+
+  const onSavePostClicked = async() => {
+
+    const data = {
+      title : detail.title,
+      content : detail.content,
+      user : detail.user
     }
+const save = await axios.post('http://localhost:5000/posts' , data)
+.then((e)=>{
+  if(e.statusText){
+    window.alert(e.statusText)
+    navigate('/')
+  }
+})
   };
 
-  const canSave = Boolean(title) && Boolean(content);
+  // const canSave = Boolean(title) && Boolean(content);
 
   return (
     <section className="mx-auto p-4 max-w-xl mt-16">
@@ -39,10 +52,10 @@ const AddPostForm = () => {
         <input
           type="text"
           id="postTitle"
-          name="postTitle"
-          value={title}
+          name="title"
+          value={detail.title}
           className="shadow container mx-auto appearance-none border rounded max-w-lg py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          onChange={onTitleChanged}
+          onChange={handleChange}
         />
         <label
           htmlFor="postAuthor"
@@ -53,10 +66,10 @@ const AddPostForm = () => {
         <input
           type="text"
           id="postAuthor"
-          name="postAuthor"
-          value={user}
+          name="user"
+          value={detail.user}
           className="shadow container mx-auto appearance-none border rounded max-w-lg py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          onChange={onAuthorChanged}
+          onChange={handleChange}
         />
         <label
           htmlFor="postContent"
@@ -67,17 +80,17 @@ const AddPostForm = () => {
 
         <textarea
           id="postContent"
-          name="postContent"
-          value={content}
+          name="content"
+          value={detail.content}
           className="shadow container mx-auto appearance-none border rounded max-w-lg py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          onChange={onContentChanged}
+          onChange={handleChange}
         />
 
         <button
           type="button"
           className="bg-purple-300 hover:bg-purple-500 hover:text-white rounded-md px-3 py-1 mt-4 mb-8"
           onClick={onSavePostClicked}
-          disabled={!canSave}
+          // disabled={!canSave}
         >
           Save Post
         </button>
