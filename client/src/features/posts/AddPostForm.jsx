@@ -1,46 +1,48 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../components/Spinner";
 
-import { postAdded } from "./postsSlice";
 const AddPostForm = () => {
   // const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
+  const [detail, setDetail] = useState({
+    title: "",
+    user: "",
+    content: "",
+  });
 
+  const handleChange = (e) => {
+    let name = e.target.name;
+    let value = e.target.value;
+    setDetail({ ...detail, [name]: value });
+  };
 
-const [detail,setDetail]=useState({
-  title : "",
-  user : "",
-  content : ""
-})
-
-const handleChange = (e)=>{
-  let name = e.target.name
-  let value = e.target.value
-  setDetail({...detail,[name]:value})
-}
-
-  const onSavePostClicked = async() => {
-
+  const onSavePostClicked = async () => {
+    setLoading(true)
     const data = {
-      title : detail.title,
-      content : detail.content,
-      user : detail.user
-    }
-const save = await axios.post('http://localhost:5000/posts' , data)
-.then((e)=>{
-  if(e.statusText){
-    window.alert(e.statusText)
-    navigate('/')
-  }
-})
+      title: detail.title,
+      content: detail.content,
+      user: detail.user,
+    };
+    await axios
+      .post("https://postredux.up.railway.app/posts", data)
+      .then((e) => {
+        setLoading(false)
+        if (e.statusText) {
+          navigate("/");
+        }
+      });
   };
 
   // const canSave = Boolean(title) && Boolean(content);
 
   return (
     <section className="mx-auto p-4 max-w-xl mt-16">
+      <div className="flex justify-center items-center">
+        <Spinner text="Adding post" loading={loading} />
+      </div>
       <h2 className="text-2xl font-bold container">Add a New Post</h2>
       <form className="bg-white rounded ">
         <label

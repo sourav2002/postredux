@@ -1,11 +1,22 @@
 import React from "react";
-
-const Spinner = ({ text = "", size = "5em" }) => {
-  const header = text ? <h4>{text}</h4> : null;
+import RingLoader from "react-spinners/RingLoader";
+const Spinner = ({ text = "", size = "5em", loading }) => {
+  const header = text !== "" ? text : "loading...";
   return (
-    <div className="spinner">
-      {header}
-      <div className="loader" style={{ height: size, width: size }} />
+    <div className="spinner flex-col justify-center items-center">
+      {loading && (
+        <>
+          <div className="loader">
+            <RingLoader
+              color="red"
+              loading={loading}
+              size={100}
+            />
+          </div>
+          <br />
+          <p className="block mt-0">{header}</p>
+        </>
+      )}
     </div>
   );
 };
