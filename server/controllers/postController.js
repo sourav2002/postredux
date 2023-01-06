@@ -41,9 +41,9 @@ export const updatePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No post with id: ${id}`);
 
-  const updatedPost = { title, content, user, _id: id };
-  await PostData.findByIdAndUpdate(id, updatedPost, { new: true });
-  res.status(204).json(updatedPost);
+  const updatedPostData = { title, content, user, _id: id, date : new Date() };
+  await PostData.findByIdAndUpdate(id, updatedPostData, { new: true });
+  res.status(204).json(updatedPostData);
 };
 
 export const deletePost = async (req, res) => {

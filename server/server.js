@@ -10,9 +10,9 @@ const app = express();
 app.use(express.json())
 app.use(cors());
 app.use("/", postRoute);
-// app.use("/", (req, res) =>{
-//     res.status(200).send(`<h1>welcome to post redux api</h1>`)
-// })
+app.use("/", (req, res) =>{
+    res.status(200).send(`<h1>welcome to post redux api</h1>`)
+})
 
 const PORT = process.env.PORT || 5000;
 mongoose.set('strictQuery', true);
