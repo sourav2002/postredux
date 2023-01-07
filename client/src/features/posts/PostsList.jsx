@@ -1,39 +1,47 @@
-import axios from "axios";
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import { getPosts } from "../../redux/api/postsThunkAPI";
 import PostAuthor from "./PostAuthor";
 import ReactionButton from "./ReactionButtons";
 import TimeAgo from "./TimeAgo";
 
 const PostsList = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const getPosts = async () => {
-    setLoading(true)
-    await axios.get("https://postredux.up.railway.app/posts").then((response) => {
-      setPosts(response.data);
-    });
-    setLoading(false)
-  };
+  const dispatch = useDispatch();
+  const posts =  useSelector((state) => state.posts.posts);
+  const [loading, setLoading] = useState(true);
+  const error = useSelector((state) => state.posts.error);
+  
   useEffect(() => {
-    getPosts();
-  }, []);
-  const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date));
+    dispatch(getPosts()).then(() => setLoading(false));
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <Spinner text="fetching posts....." loading={loading} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center">{error.message}</div>;
+  }
+  const orderedPosts = posts
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date));
   return (
     <section className="posts-list p-4 mt-2 mb-10 mx-auto max-w-xl">
       <h2 className="text-3xl font-bold tracking-wide">Posts</h2>
       {/* render posts */}
-      <div className="flex justify-center items-center">
-        <Spinner text="fetching posts....." loading={loading} />
-      </div>
+
       {orderedPosts.map((post) => (
         <article
           className="post-excerpt p-4 border rounded-md mt-2 "
-          key={post._id + Math.random() + Math.random() || post.id}
+          key={post._id + Math.random() + Math.random() || post._id}
         >
           <h3 className="text-2xl">{post.title}</h3>
           <div>
@@ -43,7 +51,7 @@ const PostsList = () => {
           <p className="post-content py-4 items-center text-gray-500">
             {post.content.substring(0, 100)}
           </p>
-          <ReactionButton post={post} setPost={setPosts} />
+          <ReactionButton postId={post._id}/>
           <button
             className="button button-disabled text-blue-500 font-semibold"
             onClick={() => {

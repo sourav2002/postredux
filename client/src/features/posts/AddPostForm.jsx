@@ -1,12 +1,12 @@
-import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import { createPost } from "../../redux/api/postsThunkAPI";
 
 const AddPostForm = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
   const [detail, setDetail] = useState({
     title: "",
     user: "",
@@ -19,30 +19,34 @@ const AddPostForm = () => {
     setDetail({ ...detail, [name]: value });
   };
 
+  const loading = useSelector((state)=> state.posts.loading);
+  const error = useSelector((state)=> state.posts.error);
+
   const onSavePostClicked = async () => {
-    setLoading(true)
     const data = {
       title: detail.title,
       content: detail.content,
       user: detail.user,
     };
-    await axios
-      .post("https://postredux.up.railway.app/posts", data)
-      .then((e) => {
-        setLoading(false)
-        if (e.statusText) {
-          navigate("/");
-        }
-      });
+    dispatch(createPost(data))
+    navigate("/");
   };
 
-  // const canSave = Boolean(title) && Boolean(content);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <Spinner text="Adding posts....." loading={loading} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center">{error.message}</div>;
+  }
+  const canSave = Boolean(detail.title) && Boolean(detail.content);
 
   return (
     <section className="mx-auto p-4 max-w-xl mt-16">
-      <div className="flex justify-center items-center">
-        <Spinner text="Adding post" loading={loading} />
-      </div>
       <h2 className="text-2xl font-bold container">Add a New Post</h2>
       <form className="bg-white rounded ">
         <label
@@ -92,7 +96,7 @@ const AddPostForm = () => {
           type="button"
           className="bg-purple-300 hover:bg-purple-500 hover:text-white rounded-md px-3 py-1 mt-4 mb-8"
           onClick={onSavePostClicked}
-          // disabled={!canSave}
+          disabled={!canSave}
         >
           Save Post
         </button>
