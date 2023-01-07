@@ -1,6 +1,6 @@
 # postredux
 
-##$ Backend deployed on - https://postredux.up.railway.app/posts
+### Backend deployed on - https://postredux.up.railway.app/posts
 
 ### Website live on - https://postredux.onrender.com/
 
