@@ -1,0 +1,28 @@
+{
+    "short_name": "Post App",
+    "name": "Post Redux App",
+    "icons": [
+        {
+            "src": "post_icon.png",
+            "type": "image/png",
+            "sizes": "256x256",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "logo192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "logo512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "maskable_icon": "/post_icon.png",
+    "maskable_icon_background_color": "#ffffff",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+}
