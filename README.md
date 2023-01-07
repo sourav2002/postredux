@@ -1,6 +1,8 @@
 # postredux
 
-## Backend deployed on - 
+##$ Backend deployed on - https://postredux.up.railway.app/posts
+
+### Website live on - https://postredux.onrender.com/
 
 ## PWA Enabled
 <img src="https://github.com/sourav2002/postredux/blob/master/client/public/images/install.png" width="300" />
