@@ -42,7 +42,7 @@ export const updatePost = createAsyncThunk(
     try {
       const postId = postData._id;
       const response = await axios.patch(
-        `http://localhost:5000/posts/${postId}`,
+        `https://postredux.up.railway.app/posts/${postId}`,
         postData
       );
       return response.data;
@@ -57,7 +57,7 @@ export const likePost = createAsyncThunk(
     try {
       const postId = reactionAndId._id;
       const response = await axios.patch(
-        `http://localhost:5000/posts/${postId}/likes`,
+        `https://postredux.up.railway.app/posts/${postId}/likes`,
         reactionAndId
       );
       return response.data;
