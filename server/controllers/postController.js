@@ -15,7 +15,6 @@ export const getPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
   const { id } = req.params;
-  // console.log(id);
   try {
     const post = await PostData.findById(id);
     res.status(200).json(post);
@@ -36,34 +35,30 @@ export const createPost = async (req, res) => {
 };
 
 export const updatePost = async (req, res) => {
-  const { id } = req.params;
-  const { title, content, user } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No post with id: ${id}`);
+  const { title, content, user, _id } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(_id))
+    return res.status(404).send(`No post with id: ${_id}`);
 
-  const updatedPostData = { title, content, user, _id: id, date : new Date() };
-  await PostData.findByIdAndUpdate(id, updatedPostData, { new: true });
-  res.status(204).json(updatedPostData);
+  const updatedPostData = { title, content, user, _id, date : new Date() };
+  const updated = await PostData.findByIdAndUpdate(_id, updatedPostData, { new: true });
+  res.status(200).json(updated);
 };
 
 export const deletePost = async (req, res) => {
   const { id } = req.params;
-  // console.log(id);
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No post with id: ${id}`);
-
   await PostData.findByIdAndRemove(id);
   res.status(200).json({ message: "Post deleted successfully." });
 };
 
 export const likePost = async (req, res) => {
   const { id } = req.params;
-  // console.log("like post id ===>  " + id);
-  const { reactions } = req.body.data;
+  const { reactions } = req.body;
   if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No post with id: ${id}`);
-  await PostData.findByIdAndUpdate(id, { reactions }, { new: true });
-  res.status(204).json(req.body);
+  return res.status(404).send(`No post with id: ${id}`);
+  await PostData.findByIdAndUpdate(id, {reactions }, { new: true });
+  res.status(200).json(req.body);
 };
 
 export default router;
